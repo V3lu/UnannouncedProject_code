@@ -115,15 +115,19 @@ public class SeleniteGeode : MonoBehaviour, IMob
 
     void OnDeath()
     {
-        if (transform.position.x >= _playerReference.transform.position.x)
+        switch (_currentAction)
         {
-            _animator.SetInteger("state", 11);
+            case Actions.Escape:
+                _animator.SetInteger("death", 2);
+                break;
+            case Actions.Approach:
+                _animator.SetInteger("death", 0);
+                break;
+            case Actions.Attack:
+                _animator.SetInteger("death", 1);
+                break;
         }
-        else
-        {
-            _animator.SetInteger("state", 10);
-        }
-           
+
     }
 
     void OnAttack()
@@ -132,14 +136,7 @@ public class SeleniteGeode : MonoBehaviour, IMob
         
         if (_attackProjectileSpawnTimer <= 0)
         {
-            if (transform.position.x >= _playerReference.transform.position.x)
-            {
-                _animator.SetInteger("state", 3);
-            }
-            else
-            {
-                _animator.SetInteger("state", 2);
-            }
+            _animator.SetInteger("state", 1);
             _attackProjectileSpawnTimer = _seleniteWalkerSO.AttackSpeed;
             SeleniteWalkerProjectile seleniteWalkerProjectile = ObjectPoolManager.SpawnObject(_projectile, transform.position, Quaternion.identity, ObjectPoolManager.PoolType.Projectiles);
             seleniteWalkerProjectile.InitializeProjectile(_playerReference.transform ,_playerReference.transform.position, _projectileMaxMoveSpeed, _projectileMaxHeight, this.transform.position);
@@ -152,7 +149,7 @@ public class SeleniteGeode : MonoBehaviour, IMob
     
     void OnEscape()
     {
-        print("escape");
+        _animator.SetInteger("state", 2);
         if (transform.position.x >= _playerReference.transform.position.x)
         {
             spriteRenderer.flipX = true;
@@ -175,6 +172,7 @@ public class SeleniteGeode : MonoBehaviour, IMob
 
     void OnApproach()
     {
+        _animator.SetInteger("state", 0);
         if (transform.position.x >= _playerReference.transform.position.x)
         {
             spriteRenderer.flipX = true;
@@ -215,5 +213,11 @@ public class SeleniteGeode : MonoBehaviour, IMob
         }
 
     }
-    
+
+    public void ResetState()
+    {
+        _animator.SetInteger("death", 3);
+        _animator.SetInteger("state", 0);
+    }
+
 }
