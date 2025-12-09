@@ -19,6 +19,7 @@ public class SeleniteGeode : MonoBehaviour, IMob
 
     GameObject _playerReference;
     Animator _animator;
+    SpriteRenderer spriteRenderer;
     float _attackProjectileSpawnTimer;
 
     enum Actions
@@ -70,6 +71,7 @@ public class SeleniteGeode : MonoBehaviour, IMob
         _enemyHealthbarController.Sethealth(HP, MaxHP);
         _animator = this.GetComponent<Animator>();
         this._playerReference = GameObject.FindGameObjectWithTag("Player");
+        this.spriteRenderer = this.GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -153,11 +155,11 @@ public class SeleniteGeode : MonoBehaviour, IMob
         print("escape");
         if (transform.position.x >= _playerReference.transform.position.x)
         {
-            _animator.SetInteger("state", 4);
+            spriteRenderer.flipX = true;
         }
         else
         {
-            _animator.SetInteger("state", 5);
+            spriteRenderer.flipX = false;
         }
 
         if (this.HP > 0)
@@ -175,11 +177,11 @@ public class SeleniteGeode : MonoBehaviour, IMob
     {
         if (transform.position.x >= _playerReference.transform.position.x)
         {
-            _animator.SetInteger("state", 1);
+            spriteRenderer.flipX = true;
         }
         else
         {
-            _animator.SetInteger("state", 0);
+            spriteRenderer.flipX = false;
         }
 
         if (this.HP > 0)
@@ -213,18 +215,5 @@ public class SeleniteGeode : MonoBehaviour, IMob
         }
 
     }
-    void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.transform == _playerReference.transform)
-        {
-            _playerReference.GetComponent<PlayerCtrl>().LooseHP(5);
-        }
-    }
-    public void ResetState()
-    {
-        _animator.SetInteger("state", 15);
-    }
-
-
     
 }
